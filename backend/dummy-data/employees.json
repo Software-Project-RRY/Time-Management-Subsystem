@@ -1,0 +1,18 @@
+[
+  {
+    "employeeId": "EMP-001",
+    "name": "Ahmed Ali"
+  },
+  {
+    "employeeId": "EMP-002",
+    "name": "Sara Mohamed"
+  },
+  {
+    "employeeId": "EMP-003",
+    "name": "Omar Hassan"
+  },
+  {
+    "employeeId": "EMP-999",
+    "name": "Terminated Employee"
+  }
+]

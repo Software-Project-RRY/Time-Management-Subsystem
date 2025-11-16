@@ -1,0 +1,18 @@
+[
+  {
+    "shiftId": "SHIFT-001",
+    "shiftName": "Morning Shift",
+    "startTime": "09:00",
+    "endTime": "17:00",
+    "shiftType": "normal",
+    "gracePeriodMinutes": 15
+  },
+  {
+    "shiftId": "SHIFT-002",
+    "shiftName": "Night Shift",
+    "startTime": "22:00",
+    "endTime": "06:00",
+    "shiftType": "overnight",
+    "gracePeriodMinutes": 10
+  }
+]
