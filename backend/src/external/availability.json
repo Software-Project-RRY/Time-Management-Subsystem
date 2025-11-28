@@ -1,0 +1,138 @@
+[
+  {
+    "employeeId": "emp-1",
+    "dayOfWeek": "Monday",
+    "startTime": "09:00",
+    "endTime": "17:00",
+    "isAvailable": true,
+    "notes": "Regular work hours"
+  },
+  {
+    "employeeId": "emp-1",
+    "dayOfWeek": "Tuesday",
+    "startTime": "09:00",
+    "endTime": "17:00",
+    "isAvailable": true,
+    "notes": "Regular work hours"
+  },
+  {
+    "employeeId": "emp-1",
+    "dayOfWeek": "Wednesday",
+    "startTime": "09:00",
+    "endTime": "17:00",
+    "isAvailable": true,
+    "notes": "Regular work hours"
+  },
+  {
+    "employeeId": "emp-1",
+    "dayOfWeek": "Thursday",
+    "startTime": "09:00",
+    "endTime": "17:00",
+    "isAvailable": true,
+    "notes": "Regular work hours"
+  },
+  {
+    "employeeId": "emp-1",
+    "dayOfWeek": "Friday",
+    "startTime": "09:00",
+    "endTime": "14:00",
+    "isAvailable": true,
+    "notes": "Half day Friday"
+  },
+  {
+    "employeeId": "emp-2",
+    "dayOfWeek": "Monday",
+    "startTime": "08:00",
+    "endTime": "16:00",
+    "isAvailable": true,
+    "notes": "Early shift"
+  },
+  {
+    "employeeId": "emp-2",
+    "dayOfWeek": "Tuesday",
+    "startTime": "08:00",
+    "endTime": "16:00",
+    "isAvailable": true,
+    "notes": "Early shift"
+  },
+  {
+    "employeeId": "emp-2",
+    "dayOfWeek": "Wednesday",
+    "startTime": "08:00",
+    "endTime": "16:00",
+    "isAvailable": true,
+    "notes": "Early shift"
+  },
+  {
+    "employeeId": "emp-2",
+    "dayOfWeek": "Thursday",
+    "startTime": "08:00",
+    "endTime": "16:00",
+    "isAvailable": true,
+    "notes": "Early shift"
+  },
+  {
+    "employeeId": "emp-2",
+    "dayOfWeek": "Friday",
+    "startTime": "08:00",
+    "endTime": "13:00",
+    "isAvailable": true,
+    "notes": "Early shift - Half day"
+  },
+  {
+    "employeeId": "emp-3",
+    "dayOfWeek": "Monday",
+    "startTime": "10:00",
+    "endTime": "15:00",
+    "isAvailable": true,
+    "notes": "Part-time hours"
+  },
+  {
+    "employeeId": "emp-3",
+    "dayOfWeek": "Wednesday",
+    "startTime": "10:00",
+    "endTime": "15:00",
+    "isAvailable": true,
+    "notes": "Part-time hours"
+  },
+  {
+    "employeeId": "emp-3",
+    "dayOfWeek": "Friday",
+    "startTime": "10:00",
+    "endTime": "13:00",
+    "isAvailable": true,
+    "notes": "Part-time - Half day"
+  },
+  {
+    "employeeId": "emp-4",
+    "dayOfWeek": "Monday",
+    "startTime": "09:00",
+    "endTime": "17:00",
+    "isAvailable": true,
+    "notes": "Intern schedule"
+  },
+  {
+    "employeeId": "emp-4",
+    "dayOfWeek": "Tuesday",
+    "startTime": "09:00",
+    "endTime": "17:00",
+    "isAvailable": true,
+    "notes": "Intern schedule"
+  },
+  {
+    "employeeId": "emp-4",
+    "dayOfWeek": "Wednesday",
+    "startTime": "09:00",
+    "endTime": "17:00",
+    "isAvailable": true,
+    "notes": "Intern schedule"
+  },
+  {
+    "employeeId": "emp-4",
+    "dayOfWeek": "Thursday",
+    "startTime": "09:00",
+    "endTime": "17:00",
+    "isAvailable": true,
+    "notes": "Intern schedule"
+  }
+]
