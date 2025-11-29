@@ -11,6 +11,8 @@ import { ShiftAssignmentController } from './shift-assignment.controller';
 import { ShiftAssignmentService } from './shift-assignment.service';
 import { ShiftController } from './shift.controller';
 import { ShiftService } from './shift.service';
+import { AttendanceController } from './attendance.controller';
+import { AttendanceService } from './attendance.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { NotificationLogSchema, NotificationLog } from './models/notification-log.schema';
 import { AttendanceCorrectionRequestSchema, AttendanceCorrectionRequest } from './models/attendance-correction-request.schema';
@@ -46,6 +48,7 @@ import { HolidaySchema, Holiday } from './models/holiday.schema';
     HolidayController,
     ShiftAssignmentController,
     ShiftController,
+    AttendanceController,
   ],
   providers: [
     TimeManagementService,
@@ -54,6 +57,7 @@ import { HolidaySchema, Holiday } from './models/holiday.schema';
     HolidayService,
     ShiftAssignmentService,
     ShiftService,
+    AttendanceService,
   ]
 })
 export class TimeManagementModule { }
