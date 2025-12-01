@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { OrganizationStructureController } from './organization-structure.controller';
 import { OrganizationStructureService } from './organization-structure.service';
+
 import { Department, DepartmentSchema } from './models/department.schema';
 import { Position, PositionSchema } from './models/position.schema';
 import {
@@ -21,18 +22,26 @@ import {
   StructureChangeRequestSchema,
 } from './models/structure-change-request.schema';
 
+// ⭐ ADD THESE IMPORTS
+import {
+  EmployeeProfile,
+  EmployeeProfileSchema,
+} from '../employee-profile/models/employee-profile.schema';
+import { AuthModule } from '../auth/auth.module';
+
 @Module({
   imports: [
+    AuthModule,
     MongooseModule.forFeature([
       { name: Department.name, schema: DepartmentSchema },
       { name: Position.name, schema: PositionSchema },
       { name: PositionAssignment.name, schema: PositionAssignmentSchema },
       { name: StructureApproval.name, schema: StructureApprovalSchema },
       { name: StructureChangeLog.name, schema: StructureChangeLogSchema },
-      {
-        name: StructureChangeRequest.name,
-        schema: StructureChangeRequestSchema,
-      },
+      { name: StructureChangeRequest.name, schema: StructureChangeRequestSchema },
+
+      // ⭐ REGISTER EMPLOYEE PROFILE MODEL HERE
+      { name: EmployeeProfile.name, schema: EmployeeProfileSchema },
     ]),
   ],
   controllers: [OrganizationStructureController],

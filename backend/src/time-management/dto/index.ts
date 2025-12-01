@@ -3,3 +3,7 @@ export * from './schedule-rule.dto';
 export * from './holiday.dto';
 export * from './shift-assignment.dto';
 export * from './shift.dto';
+export * from './lateness-rule.dto';
+export * from './overtime-rule.dto';
+export * from './time-exception.dto';
+export * from './correction.dto';
