@@ -63,7 +63,6 @@ import { AuthModule } from '../auth/auth.module';
     OvertimeRuleController,
     TimeExceptionController,
     CorrectionController,
-=======
     AttendanceController,
   ],
   providers: [
@@ -77,6 +76,7 @@ import { AuthModule } from '../auth/auth.module';
     OvertimeRuleService,
     TimeExceptionService,
     CorrectionService,
+    AttendanceService,
   ],
   exports: [
     LatenessRuleService,
