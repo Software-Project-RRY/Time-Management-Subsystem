@@ -19,6 +19,8 @@ import { TimeExceptionController } from './time-exception.controller';
 import { TimeExceptionService } from './time-exception.service';
 import { CorrectionController } from './correction.controller';
 import { CorrectionService } from './correction.service';
+import { AttendanceController } from './attendance.controller';
+import { AttendanceService } from './attendance.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { NotificationLogSchema, NotificationLog } from './models/notification-log.schema';
 import { AttendanceCorrectionRequestSchema, AttendanceCorrectionRequest } from './models/attendance-correction-request.schema';
@@ -61,6 +63,8 @@ import { AuthModule } from '../auth/auth.module';
     OvertimeRuleController,
     TimeExceptionController,
     CorrectionController,
+=======
+    AttendanceController,
   ],
   providers: [
     TimeManagementService,
@@ -79,6 +83,7 @@ import { AuthModule } from '../auth/auth.module';
     OvertimeRuleService,
     TimeExceptionService,
     CorrectionService,
+    AttendanceService,
   ]
 })
 export class TimeManagementModule { }
