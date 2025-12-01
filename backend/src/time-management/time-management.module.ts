@@ -11,6 +11,14 @@ import { ShiftAssignmentController } from './shift-assignment.controller';
 import { ShiftAssignmentService } from './shift-assignment.service';
 import { ShiftController } from './shift.controller';
 import { ShiftService } from './shift.service';
+import { LatenessRuleController } from './lateness-rule.controller';
+import { LatenessRuleService } from './lateness-rule.service';
+import { OvertimeRuleController } from './overtime-rule.controller';
+import { OvertimeRuleService } from './overtime-rule.service';
+import { TimeExceptionController } from './time-exception.controller';
+import { TimeExceptionService } from './time-exception.service';
+import { CorrectionController } from './correction.controller';
+import { CorrectionService } from './correction.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { NotificationLogSchema, NotificationLog } from './models/notification-log.schema';
 import { AttendanceCorrectionRequestSchema, AttendanceCorrectionRequest } from './models/attendance-correction-request.schema';
@@ -23,10 +31,13 @@ import { ShiftSchema, Shift } from './models/shift.schema';
 import { ShiftAssignmentSchema, ShiftAssignment } from './models/shift-assignment.schema';
 import { LatenessRule, latenessRuleSchema } from './models/lateness-rule.schema';
 import { HolidaySchema, Holiday } from './models/holiday.schema';
+import { AuthModule } from '../auth/auth.module';
 
 
 @Module({
-  imports: [MongooseModule.forFeature([
+  imports: [
+    AuthModule,
+    MongooseModule.forFeature([
     { name: NotificationLog.name, schema: NotificationLogSchema },
     { name: AttendanceCorrectionRequest.name, schema: AttendanceCorrectionRequestSchema },
     { name: ShiftType.name, schema: ShiftTypeSchema },
@@ -46,6 +57,10 @@ import { HolidaySchema, Holiday } from './models/holiday.schema';
     HolidayController,
     ShiftAssignmentController,
     ShiftController,
+    LatenessRuleController,
+    OvertimeRuleController,
+    TimeExceptionController,
+    CorrectionController,
   ],
   providers: [
     TimeManagementService,
@@ -54,6 +69,16 @@ import { HolidaySchema, Holiday } from './models/holiday.schema';
     HolidayService,
     ShiftAssignmentService,
     ShiftService,
+    LatenessRuleService,
+    OvertimeRuleService,
+    TimeExceptionService,
+    CorrectionService,
+  ],
+  exports: [
+    LatenessRuleService,
+    OvertimeRuleService,
+    TimeExceptionService,
+    CorrectionService,
   ]
 })
 export class TimeManagementModule { }

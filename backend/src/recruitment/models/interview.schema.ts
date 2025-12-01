@@ -11,6 +11,7 @@ export class Interview {
   applicationId: Types.ObjectId;
 
   @Prop({
+    type: String,
     enum: ApplicationStage,
     required: true
   })
@@ -19,7 +20,7 @@ export class Interview {
   @Prop()
   scheduledDate: Date;
 
-  @Prop({ enum: InterviewMethod })
+  @Prop({ type: String, enum: InterviewMethod })
   method: InterviewMethod;
 
   @Prop([{ type: Types.ObjectId, ref: 'User' }])
@@ -32,6 +33,7 @@ export class Interview {
   videoLink?: string;
 
   @Prop({
+    type: String,
     enum: InterviewStatus,
     default: InterviewStatus.SCHEDULED
   })
