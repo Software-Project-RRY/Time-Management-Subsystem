@@ -3,6 +3,8 @@ import { SystemRole } from '../employee-profile/enums/employee-profile.enums';
 export interface AuthUser {
   userId: string;
   email: string;
+  firstName?: string;
+  lastName?: string;
   role: SystemRole;
   employeeId?: string;
   departmentId?: string;
