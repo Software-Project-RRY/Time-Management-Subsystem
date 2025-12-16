@@ -13,8 +13,10 @@ import {
   AttendanceRecordDocument,
   Punch,
 } from './models/attendance-record.schema';
+import { ShiftAssignment, ShiftAssignmentDocument } from './models/shift-assignment.schema';
+import { Shift, ShiftDocument } from './models/shift.schema';
 import { ClockInDto, ClockOutDto, CorrectionDto } from './dto/attendance.dto';
-import { PunchType } from './models/enums/index';
+import { PunchType, ShiftAssignmentStatus } from './models/enums/index';
 
 interface Employee {
   employeeNumber: string;
@@ -33,7 +35,7 @@ interface Offboarding {
   effectiveDate: string;
 }
 
-interface Shift {
+interface DummyShift {
   shiftId: string;
   shiftName: string;
   startTime: string;
@@ -42,7 +44,7 @@ interface Shift {
   gracePeriodMinutes: number;
 }
 
-interface ShiftAssignment {
+interface DummyShiftAssignment {
   assignmentId: string;
   employeeId: string;
   shiftId: string;
@@ -55,15 +57,15 @@ export interface MonthlyReportSummary {
   employeeId: string;
   month: number;
   year: number;
-  totalDays: number;
-  present: number;
-  late: number;
-  absent: number;
-  shortTime: number;
-  totalLateMinutes: number;
-  totalShortTimeMinutes: number;
-  totalWorkMinutes: number;
-  missedPunches: number;
+  attendanceRecords: AttendanceRecordDocument[];
+  summary: {
+    totalWorkingDays: number;
+    daysPresent: number;
+    daysAbsent: number;
+    totalLateCount: number;
+    totalOvertimeMinutes: number;
+    totalWorkMinutes: number;
+  };
 }
 
 @Injectable()
@@ -71,12 +73,16 @@ export class AttendanceService implements OnModuleInit {
   private employees: Employee[] = [];
   private leaves: Leave[] = [];
   private offboardings: Offboarding[] = [];
-  private shifts: Shift[] = [];
-  private shiftAssignments: ShiftAssignment[] = [];
+  private shifts: DummyShift[] = [];
+  private shiftAssignments: DummyShiftAssignment[] = [];
 
   constructor(
     @InjectModel(AttendanceRecord.name)
     private attendanceModel: Model<AttendanceRecordDocument>,
+    @InjectModel(ShiftAssignment.name)
+    private shiftAssignmentModel: Model<ShiftAssignmentDocument>,
+    @InjectModel(Shift.name)
+    private shiftModel: Model<ShiftDocument>,
   ) {}
 
   onModuleInit(): void {
@@ -168,31 +174,21 @@ export class AttendanceService implements OnModuleInit {
     });
   }
 
-  private getShiftAssignment(employeeId: string, date: Date): ShiftAssignment {
+  private async getShiftAssignment(employeeId: string, date: Date): Promise<any> {
     const checkDate = new Date(date);
     checkDate.setHours(0, 0, 0, 0);
 
-    const assignment = this.shiftAssignments.find((sa) => {
-      if (sa.employeeId !== employeeId) {
-        return false;
-      }
-
-      const startDate = new Date(sa.startDate);
-      startDate.setHours(0, 0, 0, 0);
-
-      if (checkDate < startDate) {
-        return false;
-      }
-
-      if (sa.endDate === null) {
-        return true;
-      }
-
-      const endDate = new Date(sa.endDate);
-      endDate.setHours(0, 0, 0, 0);
-
-      return checkDate <= endDate;
-    });
+    // Query MongoDB for active shift assignments
+    const assignment = await this.shiftAssignmentModel.findOne({
+      employeeId,
+      status: ShiftAssignmentStatus.APPROVED, // Only approved assignments
+      startDate: { $lte: checkDate },
+      $or: [
+        { endDate: { $exists: false } }, // No end date
+        { endDate: null }, // Null end date
+        { endDate: { $gte: checkDate } }, // End date is in the future
+      ],
+    }).exec();
 
     if (!assignment) {
       throw new NotFoundException(
@@ -203,7 +199,7 @@ export class AttendanceService implements OnModuleInit {
     return assignment;
   }
 
-  private getShift(shiftId: string): Shift {
+  private getShift(shiftId: string): DummyShift {
     const shift = this.shifts.find((s) => s.shiftId === shiftId);
     if (!shift) {
       throw new NotFoundException(`Shift with ID ${shiftId} not found`);
@@ -211,7 +207,10 @@ export class AttendanceService implements OnModuleInit {
     return shift;
   }
 
-  private isRestDay(assignment: ShiftAssignment, date: Date): boolean {
+  private isRestDay(assignment: any, date: Date): boolean {
+    if (!assignment.restDays || !Array.isArray(assignment.restDays)) {
+      return false;
+    }
     const dayNames = [
       'Sunday',
       'Monday',
@@ -230,7 +229,8 @@ export class AttendanceService implements OnModuleInit {
       ? new Date(clockInDto.timestamp)
       : new Date();
 
-    this.getEmployee(clockInDto.employeeId);
+    // NOTE: Commented out dummy data validation - using MongoDB employee data instead
+    // this.getEmployee(clockInDto.employeeId);
 
     if (this.isTerminated(clockInDto.employeeId, timestamp)) {
       throw new BadRequestException(
@@ -244,7 +244,7 @@ export class AttendanceService implements OnModuleInit {
       );
     }
 
-    const assignment = this.getShiftAssignment(clockInDto.employeeId, timestamp);
+    const assignment = await this.getShiftAssignment(clockInDto.employeeId, timestamp);
 
     if (this.isRestDay(assignment, timestamp)) {
       throw new BadRequestException('Cannot clock in on rest day');
@@ -255,11 +255,13 @@ export class AttendanceService implements OnModuleInit {
 
     let attendanceRecord = await this.attendanceModel.findOne({
       employeeId: clockInDto.employeeId as any,
+      date: dateOnly,
     });
 
     if (!attendanceRecord) {
       attendanceRecord = new this.attendanceModel({
         employeeId: clockInDto.employeeId,
+        date: dateOnly,
         punches: [],
         totalWorkMinutes: 0,
         hasMissedPunch: false,
@@ -287,10 +289,15 @@ export class AttendanceService implements OnModuleInit {
       ? new Date(clockOutDto.timestamp)
       : new Date();
 
-    this.getEmployee(clockOutDto.employeeId);
+    // NOTE: Commented out dummy data validation - using MongoDB employee data instead
+    // this.getEmployee(clockOutDto.employeeId);
+
+    const dateOnly = new Date(timestamp);
+    dateOnly.setHours(0, 0, 0, 0);
 
     const attendanceRecord = await this.attendanceModel.findOne({
       employeeId: clockOutDto.employeeId as any,
+      date: dateOnly,
     });
 
     if (!attendanceRecord || attendanceRecord.punches.length === 0) {
@@ -392,15 +399,17 @@ export class AttendanceService implements OnModuleInit {
     month: number,
     year: number,
   ): Promise<MonthlyReportSummary> {
-    this.getEmployee(employeeId);
+    // NOTE: Commented out dummy data validation - using MongoDB employee data instead
+    // this.getEmployee(employeeId);
 
     const startDate = new Date(year, month - 1, 1);
+    startDate.setHours(0, 0, 0, 0);
     const endDate = new Date(year, month, 0, 23, 59, 59, 999);
 
     const records = await this.attendanceModel
       .find({
         employeeId: employeeId as any,
-        'punches.time': {
+        date: {
           $gte: startDate,
           $lte: endDate,
         },
@@ -408,28 +417,28 @@ export class AttendanceService implements OnModuleInit {
       .exec();
 
     let totalWorkMinutes = 0;
-    let missedPunches = 0;
 
     records.forEach((record) => {
       totalWorkMinutes += record.totalWorkMinutes || 0;
-      if (record.hasMissedPunch) {
-        missedPunches++;
-      }
     });
+
+    const daysPresent = records.filter((r) => r.punches.length > 0 && !r.hasMissedPunch).length;
+    const totalWorkingDays = new Date(year, month, 0).getDate(); // Total days in month
+    const daysAbsent = totalWorkingDays - records.length;
 
     return {
       employeeId,
       month,
       year,
-      totalDays: records.length,
-      present: records.filter((r) => !r.hasMissedPunch).length,
-      late: 0,
-      absent: 0,
-      shortTime: 0,
-      totalLateMinutes: 0,
-      totalShortTimeMinutes: 0,
-      totalWorkMinutes,
-      missedPunches,
+      attendanceRecords: records,
+      summary: {
+        totalWorkingDays,
+        daysPresent,
+        daysAbsent,
+        totalLateCount: 0, // TODO: Implement late detection logic
+        totalOvertimeMinutes: 0, // TODO: Implement overtime calculation
+        totalWorkMinutes,
+      },
     };
   }
 
@@ -459,5 +468,17 @@ export class AttendanceService implements OnModuleInit {
       .length;
 
     return clockInCount !== clockOutCount;
+  }
+
+  async getTodayAttendance(employeeId: string): Promise<AttendanceRecordDocument | null> {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const record = await this.attendanceModel.findOne({
+      employeeId: employeeId as any,
+      date: today,
+    }).exec();
+
+    return record;
   }
 }

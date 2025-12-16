@@ -59,4 +59,9 @@ export class AttendanceController {
       year,
     );
   }
+
+  @Get('today')
+  async getTodayAttendance(@Query('employeeId') employeeId: string) {
+    return await this.attendanceService.getTodayAttendance(employeeId);
+  }
 }

@@ -1,6 +1,7 @@
 import {
   Controller,
   Post,
+  Get,
   Body,
   HttpCode,
   HttpStatus,
@@ -56,15 +57,32 @@ export class AuthController {
     return result;
   }
 
+  /* ----------  GET PROFILE  ---------- */
+  @Get('profile')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.OK)
+  async getProfile(@Req() req: Request & { user: AuthUser }) {
+    const user = req.user;
+    return {
+      id: user.userId,
+      email: user.email,
+      firstName: user.firstName || '',
+      lastName: user.lastName || '',
+      role: user.role,
+      employeeId: user.employeeId,
+      departmentId: user.departmentId,
+    };
+  }
+
   /* ----------  LOGOUT  ---------- */
   @Post('logout')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
   async logout(@Req() req: Request & { user: AuthUser }, @Res({ passthrough: true }) res: Response) {
     // Extract token from cookie or Authorization header
-    const token = req.cookies?.access_token || 
-      (req.headers.authorization?.startsWith('Bearer ') 
-        ? req.headers.authorization.substring(7) 
+    const token = req.cookies?.access_token ||
+      (req.headers.authorization?.startsWith('Bearer ')
+        ? req.headers.authorization.substring(7)
         : null);
 
     if (!token) {

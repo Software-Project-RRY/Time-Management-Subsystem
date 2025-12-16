@@ -218,6 +218,8 @@ if (missingFields.length > 0) {
       const payload: AuthUser = {
         userId: emp._id.toString(),
         email: emp.workEmail,
+        firstName: emp.firstName,
+        lastName: emp.lastName,
         role: roleDoc.roles[0],
         employeeId: emp._id.toString(),
         departmentId: emp.primaryDepartmentId?.toString(),
